@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # UR5 + Overcooked 实验运行与数据采集
 
 本工程包含最新 7×9 游戏、high/low 已有 AI、UR5/HEX 控制、独立三档体验、NASA-TLX 和数据记录。AI 只执行推理，模型参数不更新。
@@ -106,3 +107,7 @@ nasa_tlx.json                    # 请求问卷时生成，保存每项评分
 界面预览与测试记录有相应标记。迁移对照结果见 [VALIDATION.md](docs/VALIDATION.md)。本次构建未连接 UR5/HEX，实机启动流程和手感需现场验证。
 
 已有环境无需重新安装。新电脑可以使用 `pip install -e .` 安装工程和依赖，连接机器人另需 `ur-rtde`。模型、配置、vendor 图片资源均需要随本文件夹一起保留；以 `run.py` 为统一入口。
+=======
+# UR5-Overcook
+改进版overcook的环境
+>>>>>>> 0dd61adf1d10bb25f7d0bca6895a835b2d1b5706
