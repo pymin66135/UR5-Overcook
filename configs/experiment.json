@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "robot": {
+    "host": "10.168.2.209",
+    "device_model": "UR5",
+    "controller_version": "3.15.2",
+    "tool_mass_kg": 0.1,
+    "tool_center_of_gravity_m": [0, 0, 0.067],
+    "tcp_pose_m_rad": [0, 0, 0.067, 0, 0, 0],
+    "force_source": "hex_udp",
+    "hex_sensor_host": "10.168.2.214",
+    "hex_sensor_port": 49152,
+    "hex_force_to_base_sign_xyz": [1, 1, 1],
+    "hex_timeout_s": 0.04
+  },
+  "motion": {
+    "axis_base": [-1, 0, 0],
+    "travel_m": 0.1,
+    "planar_y_travel_m": 0.05,
+    "planar_y_mass_kg": 0.5,
+    "planar_y_damping_n_s_m": 60,
+    "planar_y_stiffness_n_m": 80,
+    "planar_y_center_speed_m_s": 0.01,
+    "planar_y_center_tolerance_m": 0.0005,
+    "mass_kg": 1,
+    "force_filter_alpha": 0.35,
+    "max_speed_m_s": 0.25,
+    "max_accel_m_s2": 0.5,
+    "max_force_n": 50,
+    "max_lateral_m": 0.01,
+    "max_rotation_rad": 0.15,
+    "max_tracking_speed_m_s": 0.3,
+    "control_hz": 20,
+    "force_deadband_n": 2,
+    "travel_margin_m": 0.002
+  },
+  "homing": {
+    "fixed_start_enabled": true,
+    "home_speed_m_s": 0.2,
+    "home_position_gain_s_inv": 3,
+    "home_tolerance_m": 0.001,
+    "home_timeout_s": 20,
+    "home_abort_force_n": 10
+  },
+  "load_profiles": [
+    {
+      "name": "轻档",
+      "mass_kg": 0.1,
+      "damping_n_s_m": 0.1,
+      "stiffness_n_m": 0.01
+    },
+    {
+      "name": "中档",
+      "mass_kg": 1,
+      "damping_n_s_m": 40,
+      "stiffness_n_m": 4
+    },
+    {
+      "name": "重档",
+      "mass_kg": 1,
+      "damping_n_s_m": 80,
+      "stiffness_n_m": 8
+    }
+  ],
+  "checks": {
+    "force_baseline_seconds": 3,
+    "safety_policy": {
+      "upper": {
+        "travel_m": 0.3,
+        "max_speed_m_s": 0.25,
+        "max_tracking_speed_m_s": 0.3,
+        "max_accel_m_s2": 0.5,
+        "max_force_n": 50,
+        "max_lateral_m": 0.01,
+        "max_rotation_rad": 0.15,
+        "mass_kg": 40,
+        "damping_n_s_m": 500,
+        "stiffness_n_m": 400,
+        "planar_y_travel_m": 0.2,
+        "planar_y_center_speed_m_s": 0.02,
+        "planar_y_center_tolerance_m": 0.001,
+        "home_speed_m_s": 0.2,
+        "home_abort_force_n": 10,
+        "home_position_gain_s_inv": 3,
+        "game_endpoint_hold_s": 2
+      },
+      "ranges": {
+        "control_hz": [10, 50],
+        "hex_timeout_s": [0.005, 0.05],
+        "force_baseline_seconds": [0.5, 5],
+        "home_tolerance_m": [0.0005, 0.002],
+        "home_timeout_s": [1, 60]
+      },
+      "baseline_max_force_n": 50,
+      "baseline_max_noise_n": 10,
+      "stationary_speed_m_s": 0.002,
+      "baseline_min_samples": 25,
+      "baseline_sample_interval_s": 0.02,
+      "dashboard_timeout_s": 2,
+      "planar_y_damping_min_n_s_m": 1,
+      "game_input_timeout_s": 1,
+      "game_state_timeout_s": 1,
+      "startup_ui_sync_timeout_s": 2,
+      "stroke_tolerance_m": 0.001,
+      "feedback_soft_periods": 2,
+      "feedback_hard_periods": 3,
+      "parameter_slew_s": 0.3,
+      "capture_samples": 25,
+      "capture_angular_speed_rad_s": 0.01,
+      "capture_position_drift_m": 0.01,
+      "capture_rotation_drift_rad": 0.01
+    },
+    "tool_calibration_verified": true,
+    "force_calibration_verified": true,
+    "pendant_safety_limits_verified": true,
+    "controller_watchdog_verified": true,
+    "planar_workspace_verified": true,
+    "planar_y_response_verified": true
+  },
+  "interaction": {
+    "window_seconds": 3,
+    "item_weights": {
+      "empty": 0,
+      "onion": 1,
+      "tomato": 1,
+      "dish": 1.5,
+      "soup": 2
+    },
+    "game_endpoint_hold_s": 0.4,
+    "q_ref_cells": 3
+  },
+  "game": {
+    "human_role": "prep",
+    "seed": 41,
+    "fps": 60,
+    "questionnaire_after_round": false
+  },
+  "paths": {
+    "scene": "configs/scene.json",
+    "models": "models/manifest.json",
+    "home": "configs/home.json",
+    "results": "results"
+  }
+}

@@ -1,0 +1,317 @@
+{
+  "schema_version": 1,
+  "qualified": true,
+  "config_digest": "8bf1d7413d1fbdbaabfb77c81cb3d9ca3c4ce8e64102c21f71e7011439d30e92",
+  "source_manifest_sha256": "f2dc5527bc3d307432042ebb58433f765584b2f51ac9373921164f3cb3c21dd3",
+  "kind": "ur5_overcooked_inference_v1",
+  "low": {
+    "file": "low.pt",
+    "sha256": "f4499a6278be518c1c54b72b2deb9d7e51bbb35ddfe436acda30858912b7dc39",
+    "source_sha256": "3f35833b337cf1465a7a7c15017aeb73911614a31b8cd125bbd1bf95413a11c9",
+    "qualification": {
+      "training_steps": 0,
+      "selection": {
+        "mean_score": 188.0,
+        "rows": [
+          {
+            "role": "kitchen",
+            "seed": 610000,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610001,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610002,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610003,
+            "score": 200,
+            "orders": 10,
+            "failures": 3
+          },
+          {
+            "role": "kitchen",
+            "seed": 610004,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610005,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610006,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610007,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610008,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610009,
+            "score": 0,
+            "orders": 0,
+            "failures": 3
+          },
+          {
+            "role": "prep",
+            "seed": 610000,
+            "score": 120,
+            "orders": 6,
+            "failures": 1
+          },
+          {
+            "role": "prep",
+            "seed": 610001,
+            "score": 140,
+            "orders": 7,
+            "failures": 2
+          },
+          {
+            "role": "prep",
+            "seed": 610002,
+            "score": 120,
+            "orders": 6,
+            "failures": 2
+          },
+          {
+            "role": "prep",
+            "seed": 610003,
+            "score": 140,
+            "orders": 7,
+            "failures": 2
+          },
+          {
+            "role": "prep",
+            "seed": 610004,
+            "score": 140,
+            "orders": 7,
+            "failures": 2
+          },
+          {
+            "role": "prep",
+            "seed": 610005,
+            "score": 60,
+            "orders": 3,
+            "failures": 2
+          },
+          {
+            "role": "prep",
+            "seed": 610006,
+            "score": 160,
+            "orders": 8,
+            "failures": 2
+          },
+          {
+            "role": "prep",
+            "seed": 610007,
+            "score": 140,
+            "orders": 7,
+            "failures": 2
+          },
+          {
+            "role": "prep",
+            "seed": 610008,
+            "score": 160,
+            "orders": 8,
+            "failures": 3
+          },
+          {
+            "role": "prep",
+            "seed": 610009,
+            "score": 140,
+            "orders": 7,
+            "failures": 2
+          }
+        ],
+        "deterministic": false,
+        "partner_basis": "two independent PPO policies"
+      }
+    }
+  },
+  "high": {
+    "file": "high.pt",
+    "sha256": "81cbf8168af762fc9da4207a3c6a683c9e05d7b407b2310ee666acd9a233f59d",
+    "source_sha256": "addad7c8f0731a9ae2644e5cbfcbdc35440453681d1569b61d75e3cf8d3d3656",
+    "qualification": {
+      "training_steps": 0,
+      "selection": {
+        "mean_score": 270.0,
+        "rows": [
+          {
+            "role": "kitchen",
+            "seed": 610000,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610001,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610002,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610003,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610004,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610005,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610006,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610007,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610008,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "kitchen",
+            "seed": 610009,
+            "score": 280,
+            "orders": 14,
+            "failures": 0
+          },
+          {
+            "role": "prep",
+            "seed": 610000,
+            "score": 260,
+            "orders": 13,
+            "failures": 0
+          },
+          {
+            "role": "prep",
+            "seed": 610001,
+            "score": 260,
+            "orders": 13,
+            "failures": 0
+          },
+          {
+            "role": "prep",
+            "seed": 610002,
+            "score": 260,
+            "orders": 13,
+            "failures": 0
+          },
+          {
+            "role": "prep",
+            "seed": 610003,
+            "score": 260,
+            "orders": 13,
+            "failures": 0
+          },
+          {
+            "role": "prep",
+            "seed": 610004,
+            "score": 260,
+            "orders": 13,
+            "failures": 0
+          },
+          {
+            "role": "prep",
+            "seed": 610005,
+            "score": 260,
+            "orders": 13,
+            "failures": 0
+          },
+          {
+            "role": "prep",
+            "seed": 610006,
+            "score": 260,
+            "orders": 13,
+            "failures": 0
+          },
+          {
+            "role": "prep",
+            "seed": 610007,
+            "score": 260,
+            "orders": 13,
+            "failures": 0
+          },
+          {
+            "role": "prep",
+            "seed": 610008,
+            "score": 260,
+            "orders": 13,
+            "failures": 0
+          },
+          {
+            "role": "prep",
+            "seed": 610009,
+            "score": 260,
+            "orders": 13,
+            "failures": 0
+          }
+        ],
+        "deterministic": false,
+        "partner_basis": "two independent PPO policies"
+      }
+    }
+  }
+}

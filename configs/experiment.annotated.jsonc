@@ -1,0 +1,271 @@
+// 逐项注释说明版（JSONC），对应你当前粘贴/保存的数值。
+// 程序默认读取 experiment.json；本文件供阅读，不会自动同步修改到运行配置。
+// 修改参数时请同时更新 experiment.json。upper 是配置上限，motion/homing/load_profiles 是实际值。
+{
+  // 配置结构版本；当前加载器接受版本 1。
+  "schema_version": 1,
+  // 机器人、外置力传感器和安装参数；TCP/负载值用于记录和固定起点匹配，不会自动写入示教器。
+  "robot": {
+    // UR5 控制器 IP 地址。
+    "host": "10.168.2.209",
+    // 机器人型号，用于配置校验。
+    "device_model": "UR5",
+    // 预期 PolyScope（控制软件）版本；激活时与 Dashboard 返回值核对。
+    "controller_version": "3.15.2",
+    // 整套末端工具的实际质量，单位 kg；不是导纳算法中的虚拟质量。
+    "tool_mass_kg": 0.1,
+    // 工具重心相对法兰的 [x,y,z]，单位 m；这里 Z 为 67 mm。
+    "tool_center_of_gravity_m": [0, 0, 0.067],
+    // TCP（工具中心点）相对法兰偏置 [x,y,z,rx,ry,rz]；位置 m，姿态为旋转向量 rad。
+    "tcp_pose_m_rad": [0, 0, 0.067, 0, 0, 0],
+    // 力数据来源；hex_udp 表示使用外置 HEX 的 X/Y。机器人内部 Z 力估计仍参与基线检查。
+    "force_source": "hex_udp",
+    // 外置 HEX 六维力传感器的 IP 地址。
+    "hex_sensor_host": "10.168.2.214",
+    // HEX UDP 服务端口。
+    "hex_sensor_port": 49152,
+    // X/Y/Z 力读数的符号映射；1 保留、-1 反向。这里只调整正负号，不做三维坐标旋转。
+    "hex_force_to_base_sign_xyz": [1, 1, 1],
+    // 等待一次 HEX UDP 回复的超时，单位 s；0.04 = 40 ms。
+    "hex_timeout_s": 0.04
+  },
+  // 实际生效的运动与导纳参数；下面 checks.safety_policy.upper 是这些设置的校验上限。
+  "motion": {
+    // 推出方向的基座坐标单位向量；[-1,0,0] 表示 Base X−。当前 XY 模式要求该方向。
+    "axis_base": [-1, 0, 0],
+    // X 推出总行程，单位 m；0.1 = 10 cm，进度条对应 0–100%。
+    "travel_m": 0.1,
+    // 以固定起点为中心的 Y 单侧范围，单位 m；0.05 表示左右各 5 cm。
+    "planar_y_travel_m": 0.05,
+    // Y 导纳虚拟质量，单位 kg；影响横向速度响应。
+    "planar_y_mass_kg": 0.5,
+    // Y 黏性阻尼，单位 N·s/m；速度越大，模型中的阻尼项越大。
+    "planar_y_damping_n_s_m": 60,
+    // Y 回中弹簧刚度，单位 N/m；回中弹簧项为 -K_y×Y偏移。
+    "planar_y_stiffness_n_m": 80,
+    // Y 主动回中速度上限，单位 m/s；0.01 = 1 cm/s。
+    "planar_y_center_speed_m_s": 0.01,
+    // Y 回中到位容差，单位 m；0.0005 = 0.5 mm。
+    "planar_y_center_tolerance_m": 0.0005,
+    // 旧单质量模式的备用虚拟质量，单位 kg；当前三档模式实际使用 load_profiles 各档质量。
+    "mass_kg": 1,
+    // 力的一阶滤波系数，无单位；新滤波值 = 旧值 + α×(当前力−旧值)。越大响应越快。
+    "force_filter_alpha": 0.35,
+    // XY 合成指令速度上限，单位 m/s；0.25 = 25 cm/s，不是始终以此速度运行。
+    "max_speed_m_s": 0.25,
+    // 合成加速度上限，单位 m/s²；用于模型限速及 UR5 speedL 指令。
+    "max_accel_m_s2": 0.5,
+    // 扣除基线后的 XY 交互力模长停机阈值，单位 N；不是要求机器人输出恒定 50 N。
+    "max_force_n": 50,
+    // XY 模式下相对起点的 Z 位置漂移停机阈值，单位 m；0.01 = 1 cm。不是 Y 范围。
+    "max_lateral_m": 0.01,
+    // 相对起点的真实最短姿态旋转角停机阈值，单位 rad；0.15 约 8.6°，使用四元数计算，消除轴角表示跳变。
+    "max_rotation_rad": 0.15,
+    // 实测 TCP 平移速度模长停机阈值，单位 m/s；0.3 = 30 cm/s，须不低于指令速度上限。
+    "max_tracking_speed_m_s": 0.3,
+    // 机器人控制循环频率，单位 Hz；20 Hz 对应名义周期 50 ms，独立于游戏帧率。
+    "control_hz": 20,
+    // 扣基线并滤波后的力死区，单位 N；死区以内不产生该轴人为驱动力，超过后减去死区。
+    "force_deadband_n": 2,
+    // X/Y 超限判断的容差，单位 m；0.002 = 2 mm。正常边界减速仍针对正式行程。
+    "travel_margin_m": 0.002
+  },
+  // 固定起点和 H 主动归位参数；正常 RETURN 仍由人拉回。
+  "homing": {
+    // true：读取保存的固定起点；当前实时游戏需要它。启动读取位置，不自动执行归位。
+    "fixed_start_enabled": true,
+    // H 主动归位的 XY 合成速度上限，单位 m/s；0.2 = 20 cm/s，接近起点会减速。
+    "home_speed_m_s": 0.2,
+    // 归位位置增益，单位 1/s；目标速度由增益×位置误差计算，并受速度/制动上限限制。
+    "home_position_gain_s_inv": 3,
+    // XY 到固定起点的距离容差，单位 m；0.001 = 1 mm，进入容差即判定归位完成。
+    "home_tolerance_m": 0.001,
+    // 一次 H 归位允许的时长，单位 s；超时停止。
+    "home_timeout_s": 20,
+    // H 归位时的 XY 交互力停机阈值，单位 N；这里为 10 N。
+    "home_abort_force_n": 10
+  },
+  // 三个推出负载档位，按轻/中/重排列；RETURN 使用轻档质量和阻尼，X 刚度目标为 0。
+  "load_profiles": [
+    {
+      // 此档的可读名称；数组索引 0/1/2 分别对应轻/中/重。
+      "name": "轻档",
+      // 此档 X 导纳虚拟质量，单位 kg；越大，模型速度变化越迟缓。
+      "mass_kg": 0.1,
+      // 此档 X 黏性阻尼，单位 N·s/m；阻尼力项 B×速度。
+      "damping_n_s_m": 0.1,
+      // 此档 X 弹簧刚度，单位 N/m；推出时力项 K×位置，RETURN 的 X 刚度目标为 0。
+      "stiffness_n_m": 0.01
+    },
+    {
+      // 此档的可读名称；数组索引 0/1/2 分别对应轻/中/重。
+      "name": "中档",
+      // 此档 X 导纳虚拟质量，单位 kg；越大，模型速度变化越迟缓。
+      "mass_kg": 1,
+      // 此档 X 黏性阻尼，单位 N·s/m；阻尼力项 B×速度。
+      "damping_n_s_m": 40,
+      // 此档 X 弹簧刚度，单位 N/m；推出时力项 K×位置，RETURN 的 X 刚度目标为 0。
+      "stiffness_n_m": 4
+    },
+    {
+      // 此档的可读名称；数组索引 0/1/2 分别对应轻/中/重。
+      "name": "重档",
+      // 此档 X 导纳虚拟质量，单位 kg；越大，模型速度变化越迟缓。
+      "mass_kg": 1,
+      // 此档 X 黏性阻尼，单位 N·s/m；阻尼力项 B×速度。
+      "damping_n_s_m": 80,
+      // 此档 X 弹簧刚度，单位 N/m；推出时力项 K×位置，RETURN 的 X 刚度目标为 0。
+      "stiffness_n_m": 8
+    }
+  ],
+  // 初始化确认和软件保护策略。
+  "checks": {
+    // 无接触静止基线采样时长，单位 s；同时还必须满足 baseline_min_samples。
+    "force_baseline_seconds": 3,
+    // 集中保存校验范围及控制阈值；原代码分散的数值限制在这里统一配置。
+    "safety_policy": {
+      // 允许配置的最大值，不是当前实际运动值；例如允许行程 30 cm，实际 motion.travel_m 仍为 10 cm。
+      "upper": {
+        // X 行程可配置上限，单位 m；0.3 = 30 cm。
+        "travel_m": 0.3,
+        // 指令合成速度可配置上限，单位 m/s。
+        "max_speed_m_s": 0.25,
+        // 实测速度停机阈值可配置上限，单位 m/s。
+        "max_tracking_speed_m_s": 0.3,
+        // 加速度可配置上限，单位 m/s²。
+        "max_accel_m_s2": 0.5,
+        // XY 交互力停机阈值可配置上限，单位 N。
+        "max_force_n": 50,
+        // XY 模式的 Z 漂移停机阈值可配置上限，单位 m。
+        "max_lateral_m": 0.01,
+        // 姿态偏差停机阈值可配置上限，单位 rad；需不小于 motion.max_rotation_rad。
+        "max_rotation_rad": 0.15,
+        // 三档虚拟质量及 Y 虚拟质量的配置上限，单位 kg；不限制真实工具质量。
+        "mass_kg": 40,
+        // 三档 X 阻尼及 Y 阻尼的配置上限，单位 N·s/m。
+        "damping_n_s_m": 500,
+        // 三档 X 刚度及 Y 回中刚度的配置上限，单位 N/m。
+        "stiffness_n_m": 400,
+        // Y 单侧范围可配置上限，单位 m；0.2 表示最多左右各 20 cm，实际当前各 5 cm。
+        "planar_y_travel_m": 0.2,
+        // Y 回中速度可配置上限，单位 m/s。
+        "planar_y_center_speed_m_s": 0.02,
+        // Y 中心容差可配置上限，单位 m。
+        "planar_y_center_tolerance_m": 0.001,
+        // H 回位速度可配置上限，单位 m/s；还受实际 max_speed_m_s 限制。
+        "home_speed_m_s": 0.2,
+        // H 回位接触力停机阈值可配置上限，单位 N；还受实际 max_force_n 限制。
+        "home_abort_force_n": 10,
+        // H 位置增益可配置上限，单位 1/s。
+        "home_position_gain_s_inv": 3,
+        // 终点停留时间可配置上限，单位 s；实际使用 interaction.game_endpoint_hold_s。
+        "game_endpoint_hold_s": 2
+      },
+      // 相关参数的允许区间，格式为 [最小值,最大值]，含两端。
+      "ranges": {
+        // 控制频率允许范围 [10,50] Hz。
+        "control_hz": [10, 50],
+        // HEX 回复超时允许范围 [0.005,0.05] s，即 5–50 ms。
+        "hex_timeout_s": [0.005, 0.05],
+        // 基线采样时长允许范围 [0.5,5] s。
+        "force_baseline_seconds": [0.5, 5],
+        // 归位距离容差允许范围 [0.0005,0.002] m，即 0.5–2 mm。
+        "home_tolerance_m": [0.0005, 0.002],
+        // H 归位时限允许范围 [1,60] s。
+        "home_timeout_s": [1, 60]
+      },
+      // 基线三维力均值模长上限，单位 N；激活前后也检查原始三维力。X/Y 来自 HEX、Z 来自 UR5。
+      "baseline_max_force_n": 50,
+      // A4 基线噪声阈值，单位 N；计算 X/Y/Z 各自标准差，最大值须 ≤10 N。
+      "baseline_max_noise_n": 10,
+      // 静止判定的实测平移速度上限，单位 m/s；0.002 = 2 mm/s，用于采样、激活、归位前制动和终点停稳。
+      "stationary_speed_m_s": 0.002,
+      // 基线最少采样数量；样本数和采样时长两项均满足后才结束。
+      "baseline_min_samples": 25,
+      // 基线及固定起点采样之间的请求等待时间，单位 s；0.02 = 20 ms，不保证实测采样率。
+      "baseline_sample_interval_s": 0.02,
+      // Dashboard（机器人状态服务）连接和读取超时，单位 s。
+      "dashboard_timeout_s": 2,
+      // Y 阻尼允许设置的最小值，单位 N·s/m。
+      "planar_y_damping_min_n_s_m": 1,
+      // 运行中界面输入心跳的超时时限，单位 s；这里为 1 秒。
+      "game_input_timeout_s": 1,
+      // 运行中游戏状态发布的超时时限，单位 s；这里为 1 秒，独立于界面心跳。
+      "game_state_timeout_s": 1,
+      // 控制接口连接返回后，等待新界面帧确认的时限，单位 s；同步期间不发速度指令。
+      "startup_ui_sync_timeout_s": 2,
+      // 游戏 PUSH/RETURN 的行程到位容差，单位 m；1 mm，终点约 99% 即可进入停稳阶段。
+      "stroke_tolerance_m": 0.001,
+      // 反馈软超时为名义控制周期的倍数；20 Hz×2 周期 = 100 ms。单次超过先发零速度。
+      "feedback_soft_periods": 2,
+      // 反馈硬超时为名义周期的倍数；20 Hz×3 周期 = 150 ms。超过硬阈值或连续两次软超时则停止；制动距离也据此预留。
+      "feedback_hard_periods": 3,
+      // 三档 M/B/K 参数变化的平滑时间尺度，单位 s；按档位范围限速调整，不是实机响应时间。
+      "parameter_slew_s": 0.3,
+      // 执行 standalone --save-start 时读取的样本数量。
+      "capture_samples": 25,
+      // 保存起点时允许的实测角速度模长上限，单位 rad/s。
+      "capture_angular_speed_rad_s": 0.01,
+      // 保存起点采样期间，相对首个样本允许的位置漂移模长，单位 m；0.01 = 1 cm。
+      "capture_position_drift_m": 0.01,
+      // 保存起点采样期间，相对首个样本允许的最短姿态旋转角，单位 rad；不受轴角表示跳变影响。
+      "capture_rotation_drift_rad": 0.01
+    },
+    // 人工确认标记：工具实际质量、重心和 TCP 已校准；true 不会自动执行校准。
+    "tool_calibration_verified": true,
+    // 人工确认标记：力的符号和量值响应已验证；true 不会自动校准传感器。
+    "force_calibration_verified": true,
+    // 人工确认标记：示教器安全限制已现场确认；程序不自动修改这些限制。
+    "pendant_safety_limits_verified": true,
+    // 人工确认标记：控制器通信失效停机已验证；此标记本身不会安装 watchdog（看门狗）。
+    "controller_watchdog_verified": true,
+    // 人工确认标记：XY 全行程及当前姿态的可达范围已现场验证。
+    "planar_workspace_verified": true,
+    // 人工确认标记：Y 力符号、左右运动和回中响应已验证。
+    "planar_y_response_verified": true
+  },
+  // 游戏状态与机器人负载/行程的联动设置。
+  "interaction": {
+    // 累计搬运量的游戏时间窗，单位 s；上一窗口的结果决定下一窗口的推出档位。
+    "window_seconds": 3,
+    // 人类玩家每移动一格时，按移动前持有物品的权重累计搬运量；静止持物不增加。
+    "item_weights": {
+      // 空手每移动一格增加 0 个加权格数。
+      "empty": 0,
+      // 持洋葱每移动一格增加 1 个加权格数。
+      "onion": 1,
+      // 持番茄每移动一格增加 1 个加权格数。
+      "tomato": 1,
+      // 持盘子每移动一格增加 1.5 个加权格数。
+      "dish": 1.5,
+      // 持成品每移动一格增加 2 个加权格数。
+      "soup": 2
+    },
+    // 实际到推出终点、实测速度确认停稳后，发送零速度的停留时长，单位 s；结束后允许人工拉回。
+    "game_endpoint_hold_s": 0.4,
+    // 加权搬运量分档尺度；3 对应 <1 轻档、1≤量<2 中档、≥2 重档。不是机械臂行程。
+    "q_ref_cells": 3
+  },
+  // 游戏显示、随机种子和结束后问卷设置。
+  "game": {
+    // 玩家初始角色；prep = 备菜区，kitchen = 厨房。玩家始终控制蓝色 P0，AI 控制绿色 P1。
+    "human_role": "prep",
+    // 初始游戏与 AI 动作采样的随机种子；相同设置有助于复现，不代表不同条件表现相同。
+    "seed": 41,
+    // 界面帧率目标，单位帧/s；60 fps。游戏逻辑频率由 scene.json 的 step_hz 决定。
+    "fps": 60,
+    // false：默认不弹问卷；true：结束并关闭机器人后填 NASA-TLX。启动加 --questionnaire 也可开启。
+    "questionnaire_after_round": false
+  },
+  // 文件路径；相对路径以配置所属工程根目录为基准，不以终端当前目录为基准。
+  "paths": {
+    // 当前游戏地图、规则与时序配置文件。
+    "scene": "configs/scene.json",
+    // high/low 模型清单，包含模型文件名、来源和哈希；运行只做推理。
+    "models": "models/manifest.json",
+    // 持久化固定起点文件，包含位姿和工具匹配信息。
+    "home": "configs/home.json",
+    // 数据输出根目录；游戏在 game/时间编号 子目录，独立体验写独立 JSONL 文件。
+    "results": "results"
+  }
+}

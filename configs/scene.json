@@ -1,0 +1,41 @@
+{
+  "seed": 41,
+  "step_hz": 6,
+  "episode_seconds": 120,
+  "wait_seconds": 5,
+  "add_window_seconds": 5,
+  "final_cook_seconds": 5,
+  "order_score": 20,
+  "order_cycle": ["A", "B", "C"],
+  "pending_orders": 6,
+  "counter_guides": true,
+  "recipes": {
+    "A": ["onion", "onion", "tomato"],
+    "B": ["tomato", "onion", "tomato"],
+    "C": ["onion", "tomato", "onion"]
+  },
+  "control": {
+    "partner": "manual",
+    "human_role": "kitchen"
+  },
+  "map": {
+    "grid": [
+      "XDXXXSX",
+      "X  X  X",
+      "O  X  P",
+      "X 2X1 X",
+      "T     P",
+      "X  X  X",
+      "O  X  P",
+      "X  X  X",
+      "XXXXXXX"
+    ],
+    "shared_counter": [[3, 1], [3, 2], [3, 3], [3, 5], [3, 6], [3, 7]],
+    "shared_labels": ["1.1", "1.2", "1.3", "3.1", "3.2", "3.3"],
+    "crossing_cells": [[3, 4]],
+    "pots": [[6, 2], [6, 4], [6, 6]],
+    "prep_bounds": [1, 1, 2, 7],
+    "kitchen_bounds": [4, 1, 5, 7],
+    "corridor_rows": []
+  }
+}

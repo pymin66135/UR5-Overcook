@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ur5-overcooked-experiment"
+version = "0.1.0"
+description = "UR5 and Overcooked experiment runtime and data recording"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.23,<2", "torch>=2.1", "pygame>=2.6", "ipython", "ipywidgets"]
+
+[project.optional-dependencies]
+robot = ["ur-rtde"]
+
+[tool.setuptools.packages.find]
+where = ["src", "vendor"]
+include = ["ur5game*", "overcooked_ai_py*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+overcooked_ai_py = ["data/graphics/*.png", "data/graphics/*.json", "data/fonts/*.ttf", "data/layouts/*.layout"]
